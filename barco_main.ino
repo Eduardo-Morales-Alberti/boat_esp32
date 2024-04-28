@@ -273,16 +273,24 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
       String msg = String((char *)(payload));
 
       if (msg.equalsIgnoreCase("left")) {
-        //digitalWrite(ledPin, HIGH);
+        String servoString = (String)servoState;
         if (moveServo("left") == false) {
-          String servoString = (String)servoState;
+
           sendMessage(num, "No se puede girar más a la izquierda: " + servoString);
         }
+        else {
+          servoString = (String)servoState;
+          sendMessage(num, "Servo left: " + servoString);
+        }
       } else if (msg.equalsIgnoreCase("right")) {
-        //digitalWrite(ledPin, LOW);
+
+        String servoString = (String)servoState;
         if (moveServo("right") == false) {
-          String servoString = (String)servoState;
           sendMessage(num, "No se puede girar más a la derecha: " + servoString);
+        }
+        else {
+          servoString = (String)servoState;
+          sendMessage(num, "Servo right: " + servoString);
         }
       } else if(msg.equalsIgnoreCase("motor_on")) {
         startMotor();
