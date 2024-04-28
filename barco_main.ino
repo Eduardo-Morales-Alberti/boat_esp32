@@ -184,9 +184,11 @@ void changeDirection(String newDir) {
 void changeSpeed(String speed) {
   if (speed.equalsIgnoreCase("increase") && dutyCycle < 255) {
     dutyCycle += 5;
+    ledcWrite(pwmChannel, dutyCycle);
   }
   else if (speed.equalsIgnoreCase("decrease") && dutyCycle > 200) {
     dutyCycle -= 5;
+    ledcWrite(pwmChannel, dutyCycle);
   }
   else {
     Serial.println("Could not " + speed + " the speed");
