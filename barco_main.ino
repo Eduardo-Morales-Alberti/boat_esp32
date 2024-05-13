@@ -21,7 +21,7 @@ String boatDir = "forward";
 
 // Setting PWM properties
 const int freq = 30000;
-const int pwmChannel = 0;
+const int pwmChannel = 15;
 const int resolution = 8;
 int dutyCycle = 200;
 
@@ -41,7 +41,6 @@ void setup() {
   ledcAttachPin(enable1Pin, pwmChannel);
 
   Serial.begin(115200);
-  // @note: Review servo.
   
   directionServo.attach(servoPin);
 
