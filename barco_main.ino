@@ -8,6 +8,7 @@ Servo directionServo;  // create servo object to control a servo
 // Recommended PWM GPIO pins on the ESP32 include 2,4,12-19,21-23,25-27,32-33
 int servoPin = 13;
 int servoState = 0;
+int servo;
 JsonDocument doc;
 
 WebSocketsServer websockets(81);
@@ -134,20 +135,12 @@ void loop() {
   websockets.loop();
 }
 
-bool moveServo(String dir) {
-  if (dir.equalsIgnoreCase("left") && servoState >= 5) {
-    servoState -= 5;
-    String servoString = (String)servoState;
-    directionServo.write(servoState);
-    Serial.println("LEFT: " + servoString);
-  } else if (dir.equalsIgnoreCase("right") && servoState <= 175) {
-    servoState += 5;
-    String servoString = (String)servoState;
-    directionServo.write(servoState);
-    Serial.println("right: " + servoString);
-  } else {
-    return false;
-  }
+bool moveServo(int move) {
+
+    //servoState = 95;
+    //String servoString = (String)servoState;
+    //directionServo.write(servoState);
+    Serial.println("NEW: " + move);
 }
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
@@ -165,26 +158,20 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
     case WStype_TEXT:
       Serial.printf("[%u] Mensaje recibido: %s\n", num, payload);
       String msg = String((char *)(payload));
+      JsonDocument msgJson;
+      deserializeJson(msgJson, msg);
+      servo = msgJson["servo"];
 
-      if (msg.equalsIgnoreCase("left")) {
+      if (servo) {
         String servoString = (String)servoState;
-        if (moveServo("left") == false) {
+        
+        if (moveServo(servo) == false) {
 
           sendMessage(num, "No se puede girar más a la izquierda: " + servoString);
         }
         else {
           servoString = (String)servoState;
-          sendMessage(num, "Servo left: " + servoString);
-        }
-      } else if (msg.equalsIgnoreCase("right")) {
-
-        String servoString = (String)servoState;
-        if (moveServo("right") == false) {
-          sendMessage(num, "No se puede girar más a la derecha: " + servoString);
-        }
-        else {
-          servoString = (String)servoState;
-          sendMessage(num, "Servo right: " + servoString);
+          sendMessage(num, "Servo: " + servoString);
         }
       } else if(msg.equalsIgnoreCase("motor_on")) {
         startMotor();

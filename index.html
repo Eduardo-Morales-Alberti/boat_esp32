@@ -73,8 +73,8 @@
                 return;
             }
             console.log('out:', msg)
-            //this.ws.send(window.JSON.stringify(msg));
-            this.ws.send(msg);
+            this.ws.send(window.JSON.stringify({servo: parseInt("95")}));
+            //this.ws.send(msg);
         };
         somePackage.connect();
         const turnLeft = () => somePackage.send("Left");
